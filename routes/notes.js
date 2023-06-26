@@ -19,7 +19,7 @@ notes.get('/:id', (req, res) => {
         .then((json) => {
             const result = json.find((note) => note.id === noteId)
             return !result
-            ? res.json(`There is no note with the id ${noteId}`)
+            ? res.json(`That note does not exist: ${noteId}`)
             : res.json(result)
         })
 })
@@ -54,7 +54,7 @@ notes.delete('/:id', (req, res) => {
 
         writeToFile('./db/db.json', result)
 
-        res.json(`\x1b[31mDeleted note: ${noteId}\x1b[0m`)
+        res.json(`Deleted note: ${noteId}`)
     })
 })
 
