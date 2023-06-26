@@ -1,10 +1,14 @@
 const express = require('express')
 const path = require('path')
+const reqLogger = require('./middleware/reqLogger')
 const api = require('./routes/index')
 
 const PORT = process.env.PORT || 3001
 
 const app = express()
+
+// Import custom middleware, reqLogger
+app.use(reqLogger)
 
 // Middleware for parsing JSON and urlencoded form data
 app.use(express.json())
