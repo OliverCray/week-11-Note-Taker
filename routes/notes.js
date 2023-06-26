@@ -15,13 +15,13 @@ notes.get('/', (req, res) => {
 notes.get('/:id', (req, res) => {
     const noteId = req.params.id
     readFromFile('./db/db.json')
-      .then((data) => JSON.parse(data))
-      .then((json) => {
-        const result = json.filter((note) => note.id === noteId)
-        return result.length > 0
-          ? res.json(result)
-          : res.json('A note with that id does not exist')
-      })
+        .then((data) => JSON.parse(data))
+        .then((json) => {
+            const result = json.find((note) => note.id === noteId)
+            return !result
+            ? res.json(`There is no note with the id ${noteId}`)
+            : res.json(result)
+        })
 })
 
 // POST route for a new note
@@ -31,17 +31,31 @@ notes.post('/', (req, res) => {
     const { title, text } = req.body
   
     if (req.body) {
-      const newnote = {
-        title,
-        text,
-        id: uuidv4(),
-      }
+        const newnote = {
+            title,
+            text,
+            id: uuidv4(),
+        }
   
-      readAndAppend(newnote, './db/db.json')
-      res.json('Note added successfully')
+        readAndAppend(newnote, './db/db.json')
+        res.json('Note added successfully')
     } else {
-      res.error('Error in adding note')
+        res.err('Error in adding note')
     }
+})
+
+// DELETE route for a specific note
+notes.delete('/:id', (req, res) => {
+    const noteId = req.params.id
+    readFromFile('./db/db.json')
+    .then((data) => JSON.parse(data))
+    .then((json) => {
+        const result = json.filter((note) => note.id !== noteId)
+
+        writeToFile('./db/db.json', result)
+
+        res.json(`\x1b[31mDeleted note: ${noteId}\x1b[0m`)
+    })
 })
 
 module.exports = notes
