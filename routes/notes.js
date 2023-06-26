@@ -24,3 +24,23 @@ notes.get('/:id', (req, res) => {
           : res.json(result)
       })
 })
+
+// POST route for a new note
+notes.post('/', (req, res) => {
+    console.log(req.body)
+  
+    const { title, text } = req.body
+  
+    if (req.body) {
+      const newnote = {
+        title,
+        text,
+        id: uuidv4(),
+      }
+  
+      readAndAppend(newnote, './db/db.json')
+      res.json('Note added successfully')
+    } else {
+      res.error('Error in adding note')
+    }
+})
