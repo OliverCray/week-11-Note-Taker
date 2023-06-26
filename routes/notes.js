@@ -8,20 +8,19 @@ const {
 
 // GET route for retrieving all the notes
 notes.get('/', (req, res) => {
-    console.info(`${req.method} request received for ${req.path}`)
     readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)))
 })
 
 // GET route for a specific note
 notes.get('/:id', (req, res) => {
-    const noteId = req.params.note_id
+    const noteId = req.params.id
     readFromFile('./db/db.json')
       .then((data) => JSON.parse(data))
       .then((json) => {
         const result = json.filter((note) => note.id === noteId)
-        return !result
-          ? res.json('Note not found')
-          : res.json(result)
+        return result.length > 0
+          ? res.json(result)
+          : res.json('A note with that id does not exist')
       })
 })
 
